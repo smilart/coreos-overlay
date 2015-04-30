@@ -146,4 +146,5 @@ RDEPEND="${RDEPEND}
 	dev-vcs/git
 	app-misc/mc
 	sys-kernel/linux
+	app-admin/sam
 	"
