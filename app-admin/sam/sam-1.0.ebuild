@@ -13,7 +13,6 @@ KEYWORDS="amd64"
 #}
 
 SRC_URI="git://github.com/smilart/sam.git"
-inherit git-2
 
 
 src_install() {
