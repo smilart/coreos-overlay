@@ -12,7 +12,7 @@ KEYWORDS="amd64"
 #   return
 #}
 
-SRC_URI="git://github.com/smilart/sam.git"
+SRC_URI="https://github.com/smilart/sam.git"
 
 src_install() {
    dosbin sam
