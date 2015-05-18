@@ -15,7 +15,7 @@ KEYWORDS="amd64"
 
 src_install() {
    SRC_URI="git://github.com/smilart/sam.git;protocol=git"
-   newsbin "${FILESDIR}/sam sam
+   newsbin ${FILESDIR}/sam sam
 }
 
 src_compile() {
