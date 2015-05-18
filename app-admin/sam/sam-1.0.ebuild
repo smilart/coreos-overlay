@@ -12,8 +12,9 @@ KEYWORDS="amd64"
 #   return
 #}
 
-SRC_URI="git://github.com/smilart/sam.git"
-
+EGIT_REPO_URI="git://github.com/smilart/sam.git"
+EGIT_SOURCEDIRS="${S}"
+inherit git-2
 
 src_install() {
    dosbin sam
