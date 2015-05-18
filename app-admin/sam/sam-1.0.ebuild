@@ -12,8 +12,7 @@ KEYWORDS="amd64"
 #   return
 #}
 
-EGIT_REPO_URIS="git://github.com/smilart/sam.git"
-EGIT_SOURCEDIRS="${S}"
+SRC_URI="git://github.com/smilart/sam.git"
 inherit git-2
 
 
