@@ -157,4 +157,5 @@ RDEPEND="${RDEPEND}
 	net-analyzer/netcat
 	net-dns/skydns
 	sys-kernel/linux
+	app-admin/sam
 	"
