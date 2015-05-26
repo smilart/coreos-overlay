@@ -155,4 +155,6 @@ RDEPEND="${RDEPEND}
 	dev-vcs/git
 	app-misc/mc
 	net-analyzer/netcat
+	net-dns/skydns
+	sys-kernel/linux
 	"
