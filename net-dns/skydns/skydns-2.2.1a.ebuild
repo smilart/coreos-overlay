@@ -8,11 +8,8 @@ HOMEPAGE="https://github.com/skynetservices/skydns"
 
 LICENSE="MIT"
 KEYWORDS="amd64"
-#src_unpack() {
-#   return
-#}
 
-SRC_URI="http://coreos-build.smilart.com/binary/skydns/skydns"
+SRC_URI="http://coreos-build.smilart.com/binary/skydns/skydns-2.2.1a.tar.bz2"
 
 src_install() {
    dosbin skydns
