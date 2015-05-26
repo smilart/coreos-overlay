@@ -1,0 +1,13 @@
+[Unit]
+Description=skydns
+
+[Service]
+User=etcd
+PermissionsStartOnly=true
+Environment=ETCD_MACHINES='http://127.0.0.1:2379'
+ExecStart="/usr/sbin/skydns -local smilart.local"
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=default.target
