@@ -17,6 +17,7 @@ src_install() {
    default
    dosbin skydns
    systemd_dounit "${FILESDIR}"/skydns.service
+   systemd_enable_service multi-user.target skydns.service
 }
 
 src_compile() {
