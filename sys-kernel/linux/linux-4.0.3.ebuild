@@ -5,7 +5,7 @@ SLOT="0"
 
 DESCRIPTION="Kernel sources"
 HOMEPAGE="http://smilart.com"
-SRC_URI="https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.0.1.tar.xz"
+SRC_URI="https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.0.3.tar.xz"
 
 LICENSE="MIT"
 KEYWORDS="amd64"
@@ -16,7 +16,7 @@ KEYWORDS="amd64"
 
 src_install() {
    dodir /usr/sources
-   cp -L  "${DISTDIR}/linux-4.0.1.tar.xz" "${D}/usr/sources" || die "Install failed!"
+   cp -L  "${DISTDIR}/linux-4.0.3.tar.xz" "${D}/usr/sources" || die "Install failed!"
 }
 
 src_compile() {
