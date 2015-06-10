@@ -159,4 +159,5 @@ RDEPEND="${RDEPEND}
 	net-dns/skydns
 	sys-kernel/linux
 	app-admin/sam
+	sys-libs/diffutils
 	"
