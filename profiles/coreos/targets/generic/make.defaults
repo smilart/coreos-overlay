@@ -20,7 +20,7 @@ FEATURES="nodoc noinfo noman"
 #  /usr/share/locale
 #  /usr/share/zsh
 #  /var/db/Makefile
-"
+#"
 
 # Exclude assorted config files that we can do without
 INSTALL_MASK="${INSTALL_MASK}
