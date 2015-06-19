@@ -1,12 +1,11 @@
 [Unit]
 Description=skydns
+Requires=etcd2.service
 
 [Service]
-Environment=ETCD_MACHINES='http://127.0.0.1:2379'
-ExecStart=/usr/sbin/skydns -local smilart.local
+ExecStart=/bin/bash -c "/usr/sbin/skydns -domain smilart.local -addr 127.0.0.1:53 -machines 127.0.0.1:2379"
 Restart=always
 RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
-
