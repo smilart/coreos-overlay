@@ -166,4 +166,10 @@ RDEPEND="${RDEPEND}
 	net-fs/nfs-utils
 	net-misc/iputils
 	dev-vcs/git
+	app-misc/mc
+	net-analyzer/netcat
+	net-dns/skydns
+	sys-kernel/linux
+	app-admin/sam
+	sys-apps/diffutils
 	"

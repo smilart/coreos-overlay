@@ -12,15 +12,15 @@ FEATURES="nodoc noinfo noman"
 # Exclude even more documentaiton
 # Remove bash-completion files as we don't install bash-completion.
 # Remove alternate locales, we only need the standard LANG=C
-INSTALL_MASK="${INSTALL_MASK}
-  /etc/locale.gen
-  /usr/share/bash-completion
-  /usr/share/gtk-doc
-  /usr/share/i18n
-  /usr/share/locale
-  /usr/share/zsh
-  /var/db/Makefile
-"
+#INSTALL_MASK="${INSTALL_MASK}
+#  /etc/locale.gen
+#  /usr/share/bash-completion
+#  /usr/share/gtk-doc
+#  /usr/share/i18n
+#  /usr/share/locale
+#  /usr/share/zsh
+#  /var/db/Makefile
+#"
 
 # Exclude assorted config files that we can do without
 INSTALL_MASK="${INSTALL_MASK}
