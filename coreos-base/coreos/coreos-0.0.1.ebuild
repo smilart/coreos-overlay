@@ -172,4 +172,5 @@ RDEPEND="${RDEPEND}
 	sys-kernel/linux
 	app-admin/sam
 	sys-apps/diffutils
+	sys-kernel/coreos-sources
 	"
