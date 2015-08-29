@@ -15,7 +15,6 @@ INSTALL_MASK="${INSTALL_MASK}
   /usr/share/gobject-introspection-1.0
   /usr/share/pkgconfig
   /usr/share/readline
-  /usr/src
 "
 
 # Exclude nmap from prod image, we just want ncat/nping in there
