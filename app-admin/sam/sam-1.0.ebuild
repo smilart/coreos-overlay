@@ -8,9 +8,6 @@ HOMEPAGE="http://smilart.com"
 
 LICENSE="MIT"
 KEYWORDS="amd64"
-#src_unpack() {
-#   return
-#}
 
 EGIT_REPO_URI="git://github.com/smilart/sam.git"
 EGIT_SOURCEDIRS="${S}"
