@@ -28,3 +28,10 @@ ${PATCH_DIR}/12-efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch \
 ${PATCH_DIR}/13-efi-Add-EFI_SECURE_BOOT-bit.patch \
 ${PATCH_DIR}/14-hibernate-Disable-in-a-signed-modules-environment.patch \
 ${PATCH_DIR}/15-cpuset-use-trialcs-mems_allowed-as-a-temp-variable.patch"
+
+
+src_install() {
+        kernel-2_src_install
+        dodir /usr/sources
+        cd ${D}/usr/src && tar  -cjf ${D}/usr/sources/linux.tar.bz2 * && cd -
+}
