@@ -1,24 +1,20 @@
-
 EAPI="5"
 
 SLOT="0"
 
-inherit systemd git-2
+inherit systemd.
 
 DESCRIPTION="SkyDNS is a distributed service for announcement and discovery of services built on top of etcd."
 HOMEPAGE="https://github.com/skynetservices/skydns"
+SRC_URI=https://github.com/skynetservices/skydns/archive/2.5.2d.tar.gz
 
 LICENSE="MIT"
 KEYWORDS="amd64"
 
-EGIT_REPO_URI="git://github.com/skynetservices/skydns.git"
-EGIT_COMMIT="2.5.2d"
-EGIT_SOURCEDIR="${S}"
-
 DEPEND="dev-lang/go"
 
-export GOPATH="${EGIT_SOURCEDIR}"
-export GOBIN="${GOPATH}/bin"
+export GOPATH="${D}"
+export GOBIN="${D}/bin"
 
 src_prepare() {
 #get dependencies
