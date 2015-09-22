@@ -173,5 +173,5 @@ RDEPEND="${RDEPEND}
 	app-admin/sam
 	sys-apps/diffutils
 	sys-kernel/coreos-sources
-	x11-base/xorg-server
+	dev-util/dialog
 	"
