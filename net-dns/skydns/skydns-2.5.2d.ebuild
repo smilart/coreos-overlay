@@ -2,7 +2,7 @@ EAPI="5"
 
 SLOT="0"
 
-inherit systemd.
+inherit systemd
 
 DESCRIPTION="SkyDNS is a distributed service for announcement and discovery of services built on top of etcd."
 HOMEPAGE="https://github.com/skynetservices/skydns"
