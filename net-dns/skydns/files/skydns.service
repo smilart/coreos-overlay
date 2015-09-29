@@ -5,7 +5,7 @@ Requires=etcd2.service
 
 [Service]
 ExecStartPre=/bin/bash -c "while ! nc -vz 127.0.0.1 2379; do sleep 1; done"
-ExecStart=/bin/bash -c "/usr/sbin/skydns -domain smilart.local -rcache-ttl 15 -ttl 15 -addr 127.0.0.1:53 -machines 127.0.0.1:2379"
+ExecStart=/bin/bash -c "/usr/sbin/skydns -domain smilart.local -rcache-ttl 15 -addr 127.0.0.1:53 -machines http://127.0.0.1:2379"
 Restart=always
 RestartSec=10s
 
