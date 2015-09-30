@@ -31,8 +31,10 @@ ${PATCH_DIR}/15-cpuset-use-trialcs-mems_allowed-as-a-temp-variable.patch"
 
 src_compile() {
         kernel-2_src_compile
+        tar  -cjf ${WORKDIR}/linux.tar.bz2 *
         dodir /usr/sources
-        echo "D: ${D}"
-        tar  -cjf ${D}/usr/sources/linux.tar.bz2 *
+        insinto /usr/sources
+        doins ${WORKDIR}/linux.tar.bz2
+
 }
 
