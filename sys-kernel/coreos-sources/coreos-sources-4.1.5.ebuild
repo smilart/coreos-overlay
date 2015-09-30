@@ -30,8 +30,8 @@ ${PATCH_DIR}/14-hibernate-Disable-in-a-signed-modules-environment.patch \
 ${PATCH_DIR}/15-cpuset-use-trialcs-mems_allowed-as-a-temp-variable.patch"
 
 
-src_compile() {
-        kernel-2_src_compile
+src_unpack() {
+        kernel-2_src_unpack
         dodir /usr/sources
         cd ${D}/usr/src && tar  -cjf ${D}/usr/sources/linux.tar.bz2 * && cd -
 }
