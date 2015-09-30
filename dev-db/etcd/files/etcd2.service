@@ -3,9 +3,7 @@ Description=etcd2
 Conflicts=etcd.service
 
 [Service]
-User=etcd
-Environment=ETCD_DATA_DIR=/var/lib/etcd2
-Environment=ETCD_NAME=%m
+EnvironmentFile=/etc/smilart/etcd2.service.env
 ExecStart=/usr/bin/etcd2
 Restart=always
 RestartSec=10s
