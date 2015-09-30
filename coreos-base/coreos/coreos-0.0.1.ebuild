@@ -169,9 +169,9 @@ RDEPEND="${RDEPEND}
 	app-misc/mc
 	net-analyzer/netcat
 	net-dns/skydns
-	sys-kernel/linux
 	app-admin/sam
 	sys-apps/diffutils
 	sys-kernel/coreos-sources
 	dev-util/dialog
+	app-admin/smilart-utils
 	"
