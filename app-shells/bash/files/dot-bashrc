@@ -13,7 +13,7 @@ while [ $TIMEOUT -gt 0 ]; do
   echo -n $'\177';
   echo -n $'\177';
 done;
-echo -n "OK";
+echo "OK";
 }
 
 function create_etcd2_service_func(){
@@ -119,6 +119,40 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
     if [ ! -e $PATH_CONFIGURE_DIR/cluster_installed ]; then
         cluster-config;
         if [[ $? == 0 ]];then
+            #Empty etcd config
+            if [[ `cat $PATH_CONFIGURE_DIR/cluster_installed` == '' ]]; then
+              echo -e "\E[33mWARN: File cluster_installed is empty.";tput sgr0;
+              echo "Not configuring node etcd.";
+            else
+              clear;
+              create_etcd2_service_func;
+              sudo systemctl daemon-reload;
+              sudo systemctl restart systemd-networkd;
+              sudo systemctl enable etcd2.service;
+              sudo systemctl enable skydns.service;
+              sudo systemctl start etcd2-cluster.service;
+              if [ $? -ne 0 ];then
+                echo -e "\E[31m Etcd2 service is not started!" >&2;tput sgr0;
+              else
+                echo -e "\E[32m Etcd2 service is started.";tput sgr0;
+              fi;
+              echo;
+              wait_func 5;
+              echo;
+
+              echo "Configuring skydns"
+              create_skydns_service_func;
+              if [ $? -ne 0 ];then
+                  echo -e "\E[31m Skydns service is not configured!" >&2;tput sgr0;
+                else
+                  echo -e "\E[32m Skydns service is configured.";tput sgr0;
+              fi;
+              sudo systemctl start skydns.service;
+            fi;
+            for LIST_CONTAINERS in $PATH_CONTAINERS; do
+              echo "Processing $LIST_CONTAINERS file...";
+              sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
+            done;
             touch $PATH_CONFIGURE_DIR/cluster_installed;
         else
             echo;
@@ -126,71 +160,33 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
             sleep 1;
         fi;
     fi;
-    
-    #Empty etcd config
-    if [[ `cat $PATH_CONFIGURE_DIR/cluster_installed` == '' ]]; then
-        echo -e "\E[33mWARN: File cluster_installed is empty.";tput sgr0;
-        echo "Not configuring node etcd.";
-    else
-        clear;
-        create_etcd2_service_func;
-        sudo systemctl daemon-reload;
-        sudo systemctl restart systemd-networkd;
-        sudo systemctl enable etcd2.service;
-        sudo systemctl enable skydns.service;
-        sudo systemctl start etcd2-cluster.service;    
-        if [ $? -ne 0 ];then
-            echo -e "\E[31m Etcd2 service is not started!" >&2;tput sgr0;
-        else
-            echo -e "\E[32m Etcd2 service is started.";tput sgr0;
-        fi;
-        echo;
-        wait_func 5;
-        echo;
-      
-        echo "Configuring skydns"
-        create_skydns_service_func;
-        if [ $? -ne 0 ];then
-            echo -e "\E[31m Skydns service is not configured!" >&2;tput sgr0;
-        else
-            echo -e "\E[32m Skydns service is configured.";tput sgr0;
-        fi;
-        sudo systemctl start skydns.service;
-    fi;
-
-    for LIST_CONTAINERS in $PATH_CONTAINERS; do
-        echo "Processing $LIST_CONTAINERS file...";
-        sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
-    done;
-    unset PATH_CONTAINERS;
-    unset LIST_CONTAINERS;
 
     if [ ! -e $PATH_CONFIGURE_DIR/product_installed ]; then
         sudo /opt/bin/installproduct;
         if [ $? -ne 0 ];then
-            echo -e "\E[31mERROR: Product is'nt installed correctly.";tput sgr0;
+            echo -e "\E[31mERROR: Product is not installed correctly.";tput sgr0;
         fi;
+        wait_func 3;
+        # hostname
+        ping -c 1 `hostname` > /dev/null 2>&1;
+        if [ $? -ne 0 ];then
+          echo -e "\E[31m Name '`hostname`' is not available." >&2;tput sgr0;
+        fi;
+
+        # obr
+        ping -c 1 obr.smilart.local > /dev/null 2>&1;
+        if [ $? -ne 0 ];then
+          echo -e "\E[31m Name 'obr.smilart.local' is not available." >&2;tput sgr0;
+        fi;
+        echo "Testing completed.";
+        echo "Installation completed.";
         sudo touch $PATH_CONFIGURE_DIR/product_installed;
+        echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
+        wait_func 15;
+        sudo /sbin/reboot;
     fi;
-
-    wait_func 3;
-
-    # hostname
-    ping -c `hostname` > /dev/null 2>&1;
-    if [ $? -ne 0 ];then
-      echo -e "\E[31m Name '`hostname`' is'nt available." >&2;tput sgr0;
-    fi;
-
-    # obr
-    ping -c obr.smilart.local > /dev/null 2>&1;
-    if [ $? -ne 0 ];then
-      echo -e "\E[31m Name 'obr.smilart.local' is'nt available." >&2;tput sgr0;
-    fi;
-    echo "Testing completed.";
-    echo "Installation completed.";
-    echo "System will reboot after 7 seconds.";
-    wait_func 7;
-    sudo /sbin/reboot;
-
   fi;
 fi;
+
+unset PATH_CONTAINERS;
+unset LIST_CONTAINERS;
