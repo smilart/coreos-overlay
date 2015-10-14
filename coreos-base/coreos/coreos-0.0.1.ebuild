@@ -174,5 +174,4 @@ RDEPEND="${RDEPEND}
 	sys-kernel/coreos-sources
 	dev-util/dialog
 	app-admin/smilart-utils
-	sys-kernel/linux
 	"
