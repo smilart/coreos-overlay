@@ -41,4 +41,3 @@ src_install() {
         kernel-2_src_install
 }
 
-
