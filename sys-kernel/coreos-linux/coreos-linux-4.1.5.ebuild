@@ -38,6 +38,5 @@ src_install() {
         dodir /usr/sources
         insinto /usr/sources
         doins ${WORKDIR}/linux.tar.bz2
-        kernel-2_src_install
 }
 
