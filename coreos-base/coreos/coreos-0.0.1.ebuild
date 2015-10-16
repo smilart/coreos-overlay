@@ -175,4 +175,5 @@ RDEPEND="${RDEPEND}
 	dev-util/dialog
 	app-admin/smilart-utils
 	sys-kernel/coreos-linux
+	app-admin/monitor
 	"
