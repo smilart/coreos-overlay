@@ -1,0 +1,19 @@
+[Unit]
+Description=Apps Monitor
+Requires=docker.service
+After=docker.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+TimeoutStartSec=0
+Restart=on-failure
+RestartSec=10
+
+ExecStart=/bin/bash -c '\
+ while true; do\
+  sleep 3;\
+  apps-monitor;\
+  sleep 27;\
+ done;'
