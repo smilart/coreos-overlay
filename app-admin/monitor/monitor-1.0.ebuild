@@ -9,6 +9,8 @@ DESCRIPTION="Monitor serveces of etcd."
 LICENSE="MIT"
 KEYWORDS="amd64"
 
+S="${WORKDIR}"
+
 src_install() {
    dosbin "${FILESDIR}"/apps-monitor
    systemd_dounit "${FILESDIR}"/apps-monitor.service
