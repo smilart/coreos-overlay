@@ -1,19 +1,30 @@
 [Unit]
 Description=Apps Monitor
-Requires=docker.service
-After=docker.service
 
 [Install]
 WantedBy=multi-user.target
 
 [Service]
-TimeoutStartSec=0
-Restart=on-failure
-RestartSec=10
-
-ExecStart=/bin/bash -c '\
- while true; do\
-  sleep 3;\
-  apps-monitor;\
-  sleep 27;\
- done;'
+Type=simple
+ExecStart=/bin/bash -c " \
+    for CONTAINER_ID in `docker ps -q -f label=com.smilart.service.type`; do \
+        SERVICE_TTL='31'; \
+        COM_SMILART_SERVICE_TYPE=`docker inspect -f '{{index .Config.Labels \"com.smilart.service.type\"}}' $CONTAINER_ID`; \
+        COM_SMILART_SERVICE_ID=`docker inspect -f '{{index .Config.Labels \"com.smilart.service.id\"}}' $CONTAINER_ID`; \
+        COM_SMILART_SERVICE_PORT=`docker inspect -f '{{index .Config.Labels \"com.smilart.service.port\"}}' $CONTAINER_ID`; \
+        CONTAINER_NAME=`docker inspect -f '{{.Name}}' $CONTAINER_ID`; \
+        CONTAINER_IP=`docker inspect -f '{{index .NetworkSettings \"IPAddress\"}}' $CONTAINER_ID`; \
+        if [[ -n `etcdctl ls /skydns/local/smilartservices/\`hostname\`/$COM_SMILART_SERVICE_TYPE  2>&1 | grep 'Key not found'` ]]; then \
+            echo \"Creating domain smilartservices.local in etcd.\"; \
+            curl -s http://127.0.0.1:2379/v2/keys/skydns/local/smilartservices/\`hostname\`/$COM_SMILART_SERVICE_TYPE -XPUT -d dir=true; \
+        fi; \
+        if [[ -n $COM_SMILART_SERVICE_ID ]];then \
+            echo \"Creating dns-name for container key $CONTAINER_NAME .\"; \
+            etcdctl set --ttl $SERVICE_TTL /skydns/local/smilartservices/$COM_SMILART_SERVICE_TYPE/\`hostname\`$CONTAINER_NAME '{\"host\":\"$CONTAINER_IP\",\"port\":$COM_SMILART_SERVICE_PORT}'; \
+            echo \"Creating service for container key $CONTAINER_NAME .\"; \
+            etcdctl set --ttl $SERVICE_TTL /skydns/local/smilart/`hostname`/$COM_SMILART_SERVICE_TYPE/$COM_SMILART_SERVICE_ID '{\"host\":\"$CONTAINER_IP\"}'; \
+        else
+            echo \"Creating dns-name for container key $CONTAINER_NAME .\"; \
+            etcdctl set --ttl $SERVICE_TTL /skydns/local/smilartservices/$COM_SMILART_SERVICE_TYPE/\`hostname\`$CONTAINER_NAME '{\"host\":\"`hostname`\",\"port\":$COM_SMILART_SERVICE_PORT}'; \
+        fi; \
+    done;"

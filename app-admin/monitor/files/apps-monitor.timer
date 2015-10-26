@@ -1,0 +1,12 @@
+[Unit]
+Description=Run timer for apps-monitor
+Requisite=etcd2.service
+After=etcd2.service
+
+[Timer]
+OnUnitActiveSec=30s
+AccuracySec=0
+Unit=apps-monitor.service
+
+[Install]
+WantedBy=multi-user.target
