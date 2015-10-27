@@ -62,11 +62,11 @@ function create_skydns_service_func(){
     local DNS_SERVER=`cat $PATH_CONFIGURE_DIR/dns-host`;
     local HOST_PORT_CLIENT='2379';
     local HOST_IP=`cat /etc/systemd/network/static.network | grep 'Address' | sed s#"Address="##g | awk -F '/' ' {print $1} '`;
-    local i=0   
+    local i=0
 
     if [[ $MASTER_IP == 'single' ]];then
 
-      # Configure skydns  
+      # Configure skydns
       #Ping dns
       nc -vz -w 2 $DNS_SERVER 53 > /dev/null 2>&1;
       if [[ $? != 0 ]];then
@@ -81,7 +81,7 @@ function create_skydns_service_func(){
 
     fi;
 
-    curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/local/smilart/`hostname` -d value='{"host":"'$HOST_IP'"}';    
+    curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/local/smilart/`hostname`/$HOST_IP -d value='{"host":"'$HOST_IP'"}';
 }
 
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
