@@ -81,7 +81,7 @@ function create_skydns_service_func(){
 
     fi;
 
-    curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/local/smilart/`hostname`/$HOST_IP -d value='{"host":"'$HOST_IP'"}';
+    curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/local/smilart/`hostname`/$HOST_IP -d value='{"host":"'$HOST_IP'","group":"host"}';
 }
 
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
