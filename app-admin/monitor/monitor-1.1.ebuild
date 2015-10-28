@@ -12,7 +12,7 @@ KEYWORDS="amd64"
 S="${WORKDIR}"
 
 src_install() {
-   dosbin "${FILESDIR}"/apps-monitor
+   dobin "${FILESDIR}"/apps-monitor
    systemd_dounit "${FILESDIR}"/apps-monitor.service
    systemd_dounit "${FILESDIR}"/apps-monitor.timer
    systemd_enable_service multi-user.target apps-monitor.timer
