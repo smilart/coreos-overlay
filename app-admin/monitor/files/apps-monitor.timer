@@ -1,11 +1,11 @@
 [Unit]
 Description=Run timer for apps-monitor
-Requisite=etcd2.service
-After=etcd2.service
 
 [Timer]
+# Time between running each consecutive time
 OnUnitActiveSec=30s
 AccuracySec=0
+Persistent=true
 Unit=apps-monitor.service
 
 [Install]

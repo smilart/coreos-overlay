@@ -1,9 +1,6 @@
 [Unit]
 Description=Apps Monitor
 
-[Install]
-WantedBy=multi-user.target
-
 [Service]
 Type=simple
 ExecStart=/usr/bin/apps-monitor

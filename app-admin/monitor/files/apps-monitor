@@ -12,8 +12,8 @@ initial_service_func () {
         curl -s http://127.0.0.1:2379/v2/keys/skydns/local/smilartservices/$COM_SMILART_SERVICE_TYPE/$(hostname) -XPUT -d dir=true;
     fi;
     if [[ -n $COM_SMILART_SERVICE_ID ]];then
-        echo "Creating dns-name for container key $CONTAINER_NAME .";
         etcdctl set --ttl $SERVICE_TTL /skydns/local/smilartservices/$COM_SMILART_SERVICE_TYPE/$(hostname)$CONTAINER_NAME '{"host":"'$CONTAINER_IP'","port":'$COM_SMILART_SERVICE_PORT'}';
+        etcdctl updatedir --ttl $SERVICE_TTL /skydns/local/smilartservices/$COM_SMILART_SERVICE_TYPE/$(hostname)
         echo "Creating service for container key $CONTAINER_NAME .";
         etcdctl set --ttl $SERVICE_TTL /skydns/local/smilart/$(hostname)/$COM_SMILART_SERVICE_TYPE/$COM_SMILART_SERVICE_ID '{"host":"'$CONTAINER_IP'","group":"'$COM_SMILART_SERVICE_TYPE'"}';
     else
