@@ -124,7 +124,7 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
     if [ ! -e $PATH_CONFIGURE_DIR/product_installed ]; then
         sudo /opt/bin/installproduct;
         if [ $? -ne 0 ];then
-            echo -e "\E[31mERROR: Product is not installed correctly.";tput sgr0;
+            echo -e "\E[31mERROR: Product is not installed correctly." >&2;tput sgr0;
         else
             echo -e "\E[32mInstallation is completed.";tput sgr0;
             sudo touch $PATH_CONFIGURE_DIR/product_installed;
