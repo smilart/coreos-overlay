@@ -4,7 +4,7 @@ After=etcd2.service
 Requires=etcd2.service
 
 [Service]
-ExecStartPre=/bin/bash -c "while ! nc -vz 127.0.0.1 2379; do sleep 1; done"
+ExecStartPre=/usr/sbin/skydns-config
 ExecStart=/bin/bash -c "/usr/sbin/skydns -domain local -rcache-ttl 15 -addr 127.0.0.1:53 -machines http://127.0.0.1:2379"
 Restart=always
 RestartSec=10s

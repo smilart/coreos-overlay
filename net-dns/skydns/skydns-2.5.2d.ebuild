@@ -15,6 +15,7 @@ SRC_URI="http://coreos-build.smilart.com/binary/skydns/skydns-2.5.2d.tar.bz2"
 src_install() {
    default
    dosbin skydns
+   dosbin "${FILESDIR}"/skydns-config
    systemd_dounit "${FILESDIR}"/skydns.service
    systemd_enable_service multi-user.target skydns.service
 }

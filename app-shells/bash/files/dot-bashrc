@@ -19,8 +19,8 @@ echo "OK";
 function create_etcd2_service_func(){
     local line PEER_URL INITIAL_CLUSTER NAME;
     local HOST_IP=`cat /etc/systemd/network/static.network | grep 'Address' | sed s#"Address="##g | awk -F '/' ' {print $1} '`;
-    
-     
+
+ 
     # Configure etcd2.service 
     echo "ETCD_DATA_DIR=\"/var/lib/etcd2\""                                        > $PATH_CONFIGURE_DIR/etcd2.service.env;
     echo "ETCD_NAME=\"`hostname`\""                                               >> $PATH_CONFIGURE_DIR/etcd2.service.env;
@@ -36,7 +36,7 @@ function create_etcd2_service_func(){
     echo "ETCD_ADVERTISE_CLIENT_URLS=\"http://$HOST_IP:2379\""                      >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
     echo "ETCD_INITIAL_CLUSTER_TOKEN=\"smilart-cluster\""                           >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
     if [[ `cat $PATH_CONFIGURE_DIR/cluster_installed` == 'single' ]];then
-       
+
       echo "ETCD_INITIAL_ADVERTISE_PEER_URLS=\"http://$HOST_IP:2380\""              >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
       echo "ETCD_LISTEN_PEER_URLS=\"http://$HOST_IP:2380,http://127.0.0.1:2380\""   >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
       echo "ETCD_INITIAL_CLUSTER_STATE=\"new\""                                     >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
@@ -55,7 +55,7 @@ function create_etcd2_service_func(){
       echo "ETCD_INITIAL_CLUSTER_STATE=\"existing\""                                >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
     fi;
 }
-
+s
 function create_skydns_service_func(){
     local CLUSTER_INSTALLED="$PATH_CONFIGURE_DIR/cluster_installed";
     local MASTER_IP=`cat $CLUSTER_INSTALLED`;
