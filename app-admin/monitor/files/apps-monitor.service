@@ -2,5 +2,11 @@
 Description=Apps Monitor
 
 [Service]
-Type=simple
+TimeoutStartSec=0
+Restart=always
+RestartSec=30
 ExecStart=/usr/bin/apps-monitor
+
+[Install]
+WantedBy=multi-user.target
+
