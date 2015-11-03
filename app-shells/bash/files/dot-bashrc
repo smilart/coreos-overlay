@@ -55,37 +55,9 @@ function create_etcd2_service_func(){
       echo "ETCD_INITIAL_CLUSTER_STATE=\"existing\""                                >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
     fi;
 }
-s
-function create_skydns_service_func(){
-    local CLUSTER_INSTALLED="$PATH_CONFIGURE_DIR/cluster_installed";
-    local MASTER_IP=`cat $CLUSTER_INSTALLED`;
-    local DNS_SERVER=`cat $PATH_CONFIGURE_DIR/dns-host`;
-    local HOST_PORT_CLIENT='2379';
-    local HOST_IP=`cat /etc/systemd/network/static.network | grep 'Address' | sed s#"Address="##g | awk -F '/' ' {print $1} '`;
-    local i=0
-
-    if [[ $MASTER_IP == 'single' ]];then
-
-      # Configure skydns
-      #Ping dns
-      nc -vz -w 2 $DNS_SERVER 53 > /dev/null 2>&1;
-      if [[ $? != 0 ]];then
-        echo -e "\E[31mERROR: Incorrect ip from dns server.">&2; tput sgr0;
-        return 1;
-      fi;
-    
-      curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/config -d value='{"dns_addr":"127.0.0.1:53", "nameservers": ["'$DNS_SERVER':53"]}';
-
-      # Create obr configure
-      curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/local/smilart/obr -d value='{"host":"127.0.0.1"}';
-
-    fi;
-
-    curl -XPUT http://127.0.0.1:$HOST_PORT_CLIENT/v2/keys/skydns/local/smilart/`hostname`/$HOST_IP -d value='{"host":"'$HOST_IP'","group":"host"}';
-}
 
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
- 
+
   sudo setterm -msg off;
 
   sudo mkdir -p $PATH_CONFIGURE_DIR;
@@ -136,18 +108,6 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
               else
                 echo -e "\E[32m Etcd2 service is started.";tput sgr0;
               fi;
-              echo;
-              wait_func 5;
-              echo;
-
-              echo "Configuring skydns"
-              create_skydns_service_func;
-              if [ $? -ne 0 ];then
-                  echo -e "\E[31m Skydns service is not configured!" >&2;tput sgr0;
-                else
-                  echo -e "\E[32m Skydns service is configured.";tput sgr0;
-              fi;
-              sudo systemctl start skydns.service;
             fi;
             for LIST_CONTAINERS in $PATH_CONTAINERS; do
               echo "Processing $LIST_CONTAINERS file...";
@@ -156,7 +116,7 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
             touch $PATH_CONFIGURE_DIR/cluster_installed;
         else
             echo;
-            echo -e "\E[33mWARN: Not configured cluster.";tput sgr0;
+            echo -e "\E[33mWARN: Cluster is not configured.";tput sgr0;
             sleep 1;
         fi;
     fi;
@@ -165,22 +125,10 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
         sudo /opt/bin/installproduct;
         if [ $? -ne 0 ];then
             echo -e "\E[31mERROR: Product is not installed correctly.";tput sgr0;
+        else
+            echo -e "\E[32mInstallation is completed.";tput sgr0;
+            sudo touch $PATH_CONFIGURE_DIR/product_installed;
         fi;
-        wait_func 3;
-        # hostname
-        ping -c 1 `hostname` > /dev/null 2>&1;
-        if [ $? -ne 0 ];then
-          echo -e "\E[31m Name '`hostname`' is not available." >&2;tput sgr0;
-        fi;
-
-        # obr
-        ping -c 1 obr.smilart.local > /dev/null 2>&1;
-        if [ $? -ne 0 ];then
-          echo -e "\E[31m Name 'obr.smilart.local' is not available." >&2;tput sgr0;
-        fi;
-        echo "Testing completed.";
-        echo "Installation completed.";
-        sudo touch $PATH_CONFIGURE_DIR/product_installed;
         echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
         wait_func 15;
         sudo /sbin/reboot;
