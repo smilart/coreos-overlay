@@ -1,4 +1,4 @@
-#  .bashrc for user smilart
+# .bashrc for user smilart
 
 PATH_CONTAINERS="/var/lib/smilart_srv/repos/*";
 PATH_CONFIGURE_DIR="/etc/smilart";
@@ -16,46 +16,6 @@ done;
 echo "OK";
 }
 
-function create_etcd2_service_func(){
-    local line PEER_URL INITIAL_CLUSTER NAME;
-    local HOST_IP=`cat /etc/systemd/network/static.network | grep 'Address' | sed s#"Address="##g | awk -F '/' ' {print $1} '`;
-
- 
-    # Configure etcd2.service 
-    echo "ETCD_DATA_DIR=\"/var/lib/etcd2\""                                        > $PATH_CONFIGURE_DIR/etcd2.service.env;
-    echo "ETCD_NAME=\"`hostname`\""                                               >> $PATH_CONFIGURE_DIR/etcd2.service.env;
-    echo "ETCD_LISTEN_PEER_URLS=\"http://$HOST_IP:2380\""                         >> $PATH_CONFIGURE_DIR/etcd2.service.env;
-    echo "ETCD_LISTEN_CLIENT_URLS=\"http://$HOST_IP:2379,http://127.0.0.1:2379\"" >> $PATH_CONFIGURE_DIR/etcd2.service.env;
-    echo "ETCD_ADVERTISE_CLIENT_URLS=\"http://$HOST_IP:2379\""                    >> $PATH_CONFIGURE_DIR/etcd2.service.env;
-
-    # etcd2 prestart configure
-
-    echo "ETCD_DATA_DIR=\"/var/lib/etcd2\""                                          > $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    echo "ETCD_NAME=\"`hostname`\""                                                 >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    echo "ETCD_LISTEN_CLIENT_URLS=\"http://$HOST_IP:2379,http://127.0.0.1:2379\""   >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    echo "ETCD_ADVERTISE_CLIENT_URLS=\"http://$HOST_IP:2379\""                      >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    echo "ETCD_INITIAL_CLUSTER_TOKEN=\"smilart-cluster\""                           >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    if [[ `cat $PATH_CONFIGURE_DIR/cluster_installed` == 'single' ]];then
-
-      echo "ETCD_INITIAL_ADVERTISE_PEER_URLS=\"http://$HOST_IP:2380\""              >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-      echo "ETCD_LISTEN_PEER_URLS=\"http://$HOST_IP:2380,http://127.0.0.1:2380\""   >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-      echo "ETCD_INITIAL_CLUSTER_STATE=\"new\""                                     >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-      echo "ETCD_INITIAL_CLUSTER=\"`hostname`=http://$HOST_IP:2380\""               >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    else
-
-      for line in `curl -s http://\`cat $PATH_CONFIGURE_DIR/cluster_installed\`:2379/v2/members | sed s#{#"\n"{#g | grep name`
-        do
-          NAME=`echo $line | sed s#,\"#"\n",{#g | grep name | awk -F '"' ' {print $3} '`;
-          PEER_URL=`echo $line | sed s#,\"#"\n",{#g | grep peerURLs | awk -F '"' ' {print $3} '`;
-          INITIAL_CLUSTER=`echo "$INITIAL_CLUSTER,$NAME=$PEER_URL"`;
-      done
-      INITIAL_CLUSTER=`echo $INITIAL_CLUSTER | sed s#\^,##g`;
-      echo "ETCD_INITIAL_CLUSTER=\"$INITIAL_CLUSTER,`hostname`=http://$HOST_IP:2380\""                                                                                                                                   >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-      echo "ETCD_LISTEN_PEER_URLS=\"http://$HOST_IP:2380\""                         >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-      echo "ETCD_INITIAL_CLUSTER_STATE=\"existing\""                                >> $PATH_CONFIGURE_DIR/etcd2-cluster.service.env;
-    fi;
-}
-
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
 
   sudo setterm -msg off;
@@ -70,7 +30,7 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
             touch $PATH_CONFIGURE_DIR/network_installed;
         else
             echo;
-            echo -e "\E[33mWARN: Not configured network.";tput sgr0;
+            echo -e "\E[33mWARN: Network is not configured.";tput sgr0;
             sleep 1;
         fi;
     fi;
@@ -82,7 +42,7 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
             touch $PATH_CONFIGURE_DIR/datetime_installed;
         else
             echo;
-            echo -e "\E[33mWARN: Not configured time.";tput sgr0;
+            echo -e "\E[33mWARN: Time is not configured.";tput sgr0;
             sleep 1;
         fi;
     fi;
@@ -91,28 +51,6 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
     if [ ! -e $PATH_CONFIGURE_DIR/cluster_installed ]; then
         cluster-config;
         if [[ $? == 0 ]];then
-            #Empty etcd config
-            if [[ `cat $PATH_CONFIGURE_DIR/cluster_installed` == '' ]]; then
-              echo -e "\E[33mWARN: File cluster_installed is empty.";tput sgr0;
-              echo "Not configuring node etcd.";
-            else
-              clear;
-              create_etcd2_service_func;
-              sudo systemctl daemon-reload;
-              sudo systemctl restart systemd-networkd;
-              sudo systemctl enable etcd2.service;
-              sudo systemctl enable skydns.service;
-              sudo systemctl start etcd2-cluster.service;
-              if [ $? -ne 0 ];then
-                echo -e "\E[31m Etcd2 service is not started!" >&2;tput sgr0;
-              else
-                echo -e "\E[32m Etcd2 service is started.";tput sgr0;
-              fi;
-            fi;
-            for LIST_CONTAINERS in $PATH_CONTAINERS; do
-              echo "Processing $LIST_CONTAINERS file...";
-              sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
-            done;
             touch $PATH_CONFIGURE_DIR/cluster_installed;
         else
             echo;
@@ -121,18 +59,29 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
         fi;
     fi;
 
+    #Loading containers
+    for LIST_CONTAINERS in $PATH_CONTAINERS; do
+        echo;
+        echo "Processing $LIST_CONTAINERS file...";
+        sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
+    done;
+    
+    #Installing product
     if [ ! -e $PATH_CONFIGURE_DIR/product_installed ]; then
+        touch $PATH_CONFIGURE_DIR/product_installed;
         sudo /opt/bin/installproduct;
         if [ $? -ne 0 ];then
             echo -e "\E[31mERROR: Product is not installed correctly." >&2;tput sgr0;
         else
             echo -e "\E[32mInstallation is completed.";tput sgr0;
-            sudo touch $PATH_CONFIGURE_DIR/product_installed;
         fi;
-        echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
-        wait_func 15;
-        sudo /sbin/reboot;
     fi;
+
+    # Rebooting system
+    echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
+    wait_func 15;
+    sudo /sbin/reboot;
+
   fi;
 fi;
 
