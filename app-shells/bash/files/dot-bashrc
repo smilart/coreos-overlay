@@ -1,27 +1,13 @@
 # .bashrc for user smilart
 
-PATH_CONTAINERS="/var/lib/smilart_srv/repos/*";
-PATH_CONFIGURE_DIR="/etc/smilart";
-
-function wait_func(){
-local TIMEOUT=$1;
-echo -n "Wait -- ";
-while [ $TIMEOUT -gt 0 ]; do
-  echo -n "$TIMEOUT ";
-  TIMEOUT=$(($TIMEOUT-1));
-  sleep 1;
-  echo -n $'\177';
-  echo -n $'\177';
-done;
-echo "OK";
-}
-
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
 
+  PATH_CONFIGURE_DIR="/etc/smilart";
   sudo setterm -msg off;
 
-  sudo mkdir -p $PATH_CONFIGURE_DIR;
   if [ ! -e $PATH_CONFIGURE_DIR/first_boot ]; then
+
+    sudo mkdir -p $PATH_CONFIGURE_DIR;
 
     #Configuring network
     if [ ! -e $PATH_CONFIGURE_DIR/network_installed ]; then
@@ -59,15 +45,18 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
         fi;
     fi;
 
-    #Loading containers
-    for LIST_CONTAINERS in $PATH_CONTAINERS; do
-        echo;
-        echo "Processing $LIST_CONTAINERS file...";
-        sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
-    done;
-    
-    #Installing product
+    #Installing containers
     if [ ! -e $PATH_CONFIGURE_DIR/product_installed ]; then
+
+        #Loading containers
+        PATH_CONTAINERS="/var/lib/smilart_srv/repos/*";
+        for LIST_CONTAINERS in $PATH_CONTAINERS; do
+            echo;
+            echo "Processing $LIST_CONTAINERS file...";
+            sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
+        done;
+
+        # Installing product
         touch $PATH_CONFIGURE_DIR/product_installed;
         sudo /opt/bin/installproduct;
         if [ $? -ne 0 ];then
@@ -75,15 +64,19 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
         else
             echo -e "\E[32mInstallation is completed.";tput sgr0;
         fi;
+
+        # Rebooting system
+        echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
+        TIMEOUT=15;
+        echo -n "Wait -- ";
+        while [ $TIMEOUT -gt 0 ]; do
+            echo -n "$TIMEOUT ";
+            TIMEOUT=$(($TIMEOUT-1));
+            sleep 1;
+        done;
+        echo "OK";
+        touch $PATH_CONFIGURE_DIR/first_boot;
+        sudo /sbin/reboot;
     fi;
-
-    # Rebooting system
-    echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
-    wait_func 15;
-    sudo /sbin/reboot;
-
   fi;
 fi;
-
-unset PATH_CONTAINERS;
-unset LIST_CONTAINERS;
