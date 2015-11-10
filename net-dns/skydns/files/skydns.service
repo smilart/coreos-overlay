@@ -5,7 +5,7 @@ Requires=etcd2.service
 
 [Service]
 ExecStartPre=/usr/sbin/skydns-config
-ExecStart=/bin/bash -c "/usr/sbin/skydns -domain local -rcache-ttl 15 -dns_addr 0.0.0.0:53 -machines http://127.0.0.1:2379"
+ExecStart=/bin/bash -c "/usr/sbin/skydns -domain local -rcache-ttl 15 -addr 0.0.0.0:53 -machines http://127.0.0.1:2379"
 Restart=always
 RestartSec=10s
 
