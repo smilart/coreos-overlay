@@ -1,7 +1,5 @@
 [Unit]
 Description=skydns
-After=etcd2.service
-Requires=etcd2.service
 
 [Service]
 ExecStartPre=/usr/sbin/skydns-config
