@@ -22,7 +22,7 @@ while true; do
         # Configure skydns
         if [[ $MASTER_IP == 'single' ]];then
             echo "Configuring skydns.";
-            etcdctl set /skydns/config '{"dns_addr":"127.0.0.1:53", "nameservers": ["'$DNS_IP':53"]}';
+            etcdctl set /skydns/config '{"dns_addr":"0.0.0.0:53", "nameservers": ["'$DNS_IP':53"]}';
             if [ $? -ne 0 ];then
                 echo "ERROR: Skydns is not configured.";
                 continue;
