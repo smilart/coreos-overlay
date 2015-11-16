@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 initial_service_func () {
-    SERVICE_TTL='31';
+    SERVICE_TTL='61';
     COM_SMILART_SERVICE_TYPE=`docker inspect -f '{{index .Config.Labels "com.smilart.service.type"}}' $CONTAINER_ID`;
     COM_SMILART_SERVICE_ID=`docker inspect -f '{{index .Config.Labels "com.smilart.service.id"}}' $CONTAINER_ID`;
     COM_SMILART_SERVICE_PORT=`docker inspect -f '{{index .Config.Labels "com.smilart.service.port"}}' $CONTAINER_ID`;
