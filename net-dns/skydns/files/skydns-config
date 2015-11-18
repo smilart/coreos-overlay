@@ -27,14 +27,8 @@ while true; do
                 echo "ERROR: Skydns is not configured.";
                 continue;
             fi;
-            echo "Adding obr repository.";
-            etcdctl set /skydns/local/smilart/obr '{"host":"127.0.0.1"}';
-            if [ $? -ne 0 ];then
-                echo "ERROR: Repository obr is not created.";
-                continue;
-            fi;
         fi;
-        echo "Adding obr repository.";
+        echo "Adding hostname.";
         etcdctl set /skydns/local/smilart/`hostname`/$HOST_IP '{"host":"'$HOST_IP'","group":"host"}';
         if [[ $? == 0 ]];then
            break
