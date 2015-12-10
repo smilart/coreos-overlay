@@ -3,7 +3,13 @@
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
 
   PATH_CONFIGURE_DIR="/etc/smilart";
-  sudo setterm -msg off;
+
+  # Disabling kernel messages
+  if [[ `tty` =~ "tty" ]];then
+    setterm --powerdown 0
+    setterm --powersave off
+    setterm --blank 0
+  fi;
 
   if [ ! -e $PATH_CONFIGURE_DIR/first_boot ]; then
 
