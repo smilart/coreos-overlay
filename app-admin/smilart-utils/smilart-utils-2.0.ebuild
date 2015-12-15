@@ -14,7 +14,6 @@ EGIT_SOURCEDIRS="${S}"
 inherit git-2
 
 src_install() {
-   dosbin cluster-config
    dosbin datetime-config
    dosbin network-config 
 }

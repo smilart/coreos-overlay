@@ -31,14 +31,6 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
         fi;
     fi;
 
-    #Configuring cluster
-    if [ ! -e $PATH_CONFIGURE_DIR/cluster_installed ]; then
-        cluster-config;
-        if [[ $? == 0 ]];then
-            touch $PATH_CONFIGURE_DIR/cluster_installed;
-        fi;
-    fi;
-
     #Installing containers
     if [ ! -e $PATH_CONFIGURE_DIR/product_installed ]; then
 

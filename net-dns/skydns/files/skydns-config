@@ -2,7 +2,6 @@
 
 # Variables
 PATH_CONFIGURE_DIR='/etc/smilart';
-CLUSTER_INSTALLED="$PATH_CONFIGURE_DIR/cluster_installed";
 SKYDNS_CONFIGURED="$PATH_CONFIGURE_DIR/skydns_configured";
 NETWORK_INSTALLED=`cat $PATH_CONFIGURE_DIR/network_installed`
 
@@ -17,18 +16,15 @@ done;
 while true; do
     sleep 1;
     DNS_IP=`cat $PATH_CONFIGURE_DIR/dns-host`;
-    MASTER_IP=`cat $CLUSTER_INSTALLED`;
     HOST_IP=`cat /etc/systemd/network/$NETWORK_INSTALLED.network | grep 'Address' | sed s#"Address="##g | awk -F '/' ' {print $1} '`;
 
-    if [ -e "$CLUSTER_INSTALLED" -a -e "$PATH_CONFIGURE_DIR/dns-host" ];then
+    if [ -e "$PATH_CONFIGURE_DIR/dns-host" ];then
         # Configure skydns
-        if [[ $MASTER_IP == 'single' ]];then
-            echo "Configuring skydns.";
-            etcdctl set /skydns/config '{"dns_addr":"0.0.0.0:53", "nameservers": ["'$DNS_IP':53"]}';
-            if [ $? -ne 0 ];then
-                echo "ERROR: Skydns is not configured.";
-                continue;
-            fi;
+        echo "Configuring skydns.";
+        etcdctl set /skydns/config '{"dns_addr":"0.0.0.0:53", "nameservers": ["'$DNS_IP':53"]}';
+        if [ $? -ne 0 ];then
+            echo "ERROR: Skydns is not configured.";
+            continue;
         fi;
         echo "Removing 'hostname' key.";
         etcdctl updatedir --ttl=1 /skydns/local/smilart/`hostname`;
