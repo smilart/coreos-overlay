@@ -2,37 +2,53 @@
 
 # Variables
 PATH_CONFIGURE_DIR='/etc/smilart';
-SKYDNS_CONFIGURED="$PATH_CONFIGURE_DIR/skydns_configured";
-NETWORK_INSTALLED=`cat $PATH_CONFIGURE_DIR/network_installed`
-
-ETCD_PORT_CLIENT='2379';
 
 # Start etcd?
-while ! nc -vz 127.0.0.1 $ETCD_PORT_CLIENT; do
+while ! nc -vz 127.0.0.1 2379; do
     sleep 1;
 done;
 
 # First start?
 while true; do
     sleep 1;
+
     DNS_IP=`cat $PATH_CONFIGURE_DIR/dns-host`;
+    NETWORK_INSTALLED=`cat $PATH_CONFIGURE_DIR/network_installed`;
+
+    if [[ -z "$NETWORK_INSTALLED" || -z "DNS_IP" ]];then
+      echo "ERROR: Files network_installed or dns-host is empty.";
+      continue;
+    fi;
+
+    if ! [ -e /etc/systemd/network/$NETWORK_INSTALLED.network ];then
+      echo "ERROR: Not exist file /etc/systemd/network/$NETWORK_INSTALLED.network.";
+      continue;
+    fi;
+
     HOST_IP=`cat /etc/systemd/network/$NETWORK_INSTALLED.network | grep 'Address' | sed s#"Address="##g | awk -F '/' ' {print $1} '`;
 
-    if [ -e "$PATH_CONFIGURE_DIR/dns-host" ];then
-        # Configure skydns
-        echo "Configuring skydns.";
-        etcdctl set /skydns/config '{"dns_addr":"0.0.0.0:53", "nameservers": ["'$DNS_IP':53"]}';
-        if [ $? -ne 0 ];then
-            echo "ERROR: Skydns is not configured.";
-            continue;
-        fi;
-        echo "Removing 'hostname' key.";
-        etcdctl updatedir --ttl=1 /skydns/local/smilart/`hostname`;
-        sleep 2;
-        echo "Adding hostname.";
-        etcdctl set /skydns/local/smilart/`hostname`/$HOST_IP '{"host":"'$HOST_IP'","group":"host"}';
-        if [[ $? == 0 ]];then
-           break
-        fi;
+    # Configure skydns
+    echo "Configuring skydns.";
+    etcdctl set /skydns/config '{"dns_addr":"0.0.0.0:53", "nameservers": ["'$DNS_IP':53"]}';
+    if [ $? -ne 0 ];then
+        echo "ERROR: Skydns is not configured.";
+        continue;
+    fi;
+
+    etcdctl get /skydns/local/smilart/`hostname` >/dev/null 2>&1;
+    if [[ $? == 0 ]];then
+       echo "Removing 'hostname' key.";
+       etcdctl updatedir --ttl=1 /skydns/local/smilart/`hostname`;
+    else
+       echo "ERROR: Not get key /skydns/local/smilart/'hostname'."
+    fi;
+
+    # For update key
+    sleep 2;
+
+    echo "Adding hostname.";
+    etcdctl set /skydns/local/smilart/`hostname`/$HOST_IP '{"host":"'$HOST_IP'","group":"host"}';
+    if [[ $? == 0 ]];then
+       break
     fi;
 done;
