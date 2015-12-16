@@ -6,6 +6,7 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
 
   # Disabling kernel messages
   if [[ `tty` =~ "tty" ]];then
+    setterm --msg off
     setterm --powerdown 0
     setterm --powersave off
     setterm --blank 0
