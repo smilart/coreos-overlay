@@ -40,7 +40,8 @@ src_install() {
 	newbin "${WORKDIR}/gopath/bin/${PN}" "${PN}${SLOT}"
 
 	systemd_dounit "${FILESDIR}/${PN}${SLOT}.service"
-	systemd_dounit "${FILESDIR}/${PN}${SLOT}-cluster.service"
+	systemd_enable_service multi-user.target ${PN}${SLOT}.service
+#	systemd_dounit "${FILESDIR}/${PN}${SLOT}-cluster.service"
 	systemd_dotmpfilesd "${FILESDIR}/${PN}${SLOT}.conf"
 
 	coreos-dodoc -r Documentation/*
