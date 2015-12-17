@@ -35,16 +35,16 @@ while true; do
         continue;
     fi;
 
-    etcdctl updatedir --ttl=1 /skydns/local/smilart/`hostname`;
-    if [[ $? == 0 ]];then
-       echo "Removing 'hostname' key.";
-    else
-       echo "ERROR: Not get key /skydns/local/smilart/'hostname'."
-       continue;
+    if [[ -z `etcdctl ls /skydns/local/smilart/$(hostname) 2>&1 | grep 'not found'` ]];then
+        etcdctl updatedir --ttl=1 /skydns/local/smilart/`hostname`;
+        if [[ $? == 0 ]];then
+            echo "Removing 'hostname' key.";
+            sleep 2;
+        else
+            echo "ERROR: Not get key /skydns/local/smilart/'hostname'."
+            continue;
+        fi;
     fi;
-
-    # For update key
-    sleep 2;
 
     echo "Adding hostname.";
     etcdctl set /skydns/local/smilart/`hostname`/$HOST_IP '{"host":"'$HOST_IP'","group":"host"}';
