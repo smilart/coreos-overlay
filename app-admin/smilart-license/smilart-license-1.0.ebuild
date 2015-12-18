@@ -8,7 +8,7 @@ HOMEPAGE="http://smilart.com"
 LICENSE="MIT"
 KEYWORDS="amd64"
 
-SRC_URI="http://coreos-build.smilart.com/binary/license/smilart-license-utils-1.0.tar.bz2"
+SRC_URI="http://coreos-build.smilart.com/binary/license/smilart-license-1.0.tar.bz2"
 
 src_install() {
    dosbin nodeinfo
