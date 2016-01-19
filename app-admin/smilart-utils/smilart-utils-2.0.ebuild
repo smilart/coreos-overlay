@@ -15,7 +15,8 @@ inherit git-2
 
 src_install() {
    dosbin datetime-config
-   dosbin network-config 
+   dosbin network-config
+   dosbin distribution-config
 }
 
 src_compile() {

@@ -2,8 +2,6 @@
 
 if [[ $- =~ "i" && $USER == "smilart" ]]; then
 
-  PATH_CONFIGURE_DIR="/etc/smilart";
-
   # Disabling kernel messages
   if [[ `tty` =~ "tty" ]];then
     setterm --msg off
@@ -12,49 +10,10 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
     setterm --blank 0
   fi;
 
-  if [ ! -e $PATH_CONFIGURE_DIR/first_boot ]; then
+  if [ ! -e /etc/smilart/first_boot ]; then
+    
+    #First start of the product installation script.
+    distribution-config;
 
-    sudo mkdir -p $PATH_CONFIGURE_DIR;
-
-    #Configuring network
-    if [ ! -e $PATH_CONFIGURE_DIR/network_installed ]; then
-        network-config;
-    fi;
-
-    #Configuring time
-    if [ ! -e $PATH_CONFIGURE_DIR/datetime_installed ]; then
-        datetime-config;
-        if [[ $? == 0 ]];then
-            touch $PATH_CONFIGURE_DIR/datetime_installed;
-        fi;
-    fi;
-
-    #Installing containers
-    if [ ! -e $PATH_CONFIGURE_DIR/product_installed ]; then
-
-        #Loading containers
-        PATH_CONTAINERS="/var/lib/smilart_srv/repos/*";
-        for LIST_CONTAINERS in $PATH_CONTAINERS; do
-            echo;
-            echo "Processing $LIST_CONTAINERS file...";
-            sudo /usr/sbin/sam installfile $LIST_CONTAINERS;
-        done;
-
-        # Installing product
-        sudo /opt/bin/installproduct;
-
-        # Rebooting system
-        echo -e "\E[33mSystem will reboot after 15 seconds.";tput sgr0;
-        TIMEOUT=15;
-        echo -n "Wait -- ";
-        while [ $TIMEOUT -gt 0 ]; do
-            echo -n "$TIMEOUT ";
-            TIMEOUT=$(($TIMEOUT-1));
-            sleep 1;
-        done;
-        echo "OK";
-        touch $PATH_CONFIGURE_DIR/first_boot;
-        sudo /sbin/reboot;
-    fi;
   fi;
 fi;
