@@ -71,7 +71,6 @@ src_compile() {
 	${PYTHON} "${FILESDIR}/certdata2pem.py" "${certdata}" certs || die
 
 	cd certs || die
-	cp ${FILESDIR}/packages.smilart.com.pem ./
 	gen_hash_links *.pem
 	cat *.pem > ca-certificates.crt || die
 	gen_tmpfiles * > "${S}/${PN}.conf" || die
