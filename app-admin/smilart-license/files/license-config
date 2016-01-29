@@ -23,6 +23,7 @@ tempdir() {
 }
 
 TMP_DIALOG_WARN=$(tempfile)
+TMP_DIALOG_INFO=$(tempfile)
 TMP_DIALOG_MENU=$(tempfile)
 TMP_DIALOG_ERROR=$(tempfile)
 MOUNT_DIR=$(tempdir)
@@ -31,6 +32,11 @@ echo "
 dialog_color = (YELLOW,WHITE,ON)
 title_color = (RED,WHITE,ON)
 " > $TMP_DIALOG_WARN;
+
+echo "
+dialog_color = (GREEN,WHITE,ON)
+title_color = (RED,WHITE,ON)
+" > $TMP_DIALOG_INFO;
 
 echo "
 bindkey formbox   TAB  form_next
@@ -58,13 +64,13 @@ run_at_break(){
     dialog --ok-label "OK" \
            --msgbox "\nWARN: License product is not configured." 10 50;
   umount $MOUNT_DIR > /dev/null 2>&1;
-  rm -f -r $TMP_DIALOG_MENU $TMP_DIALOG_ERROR $TMP_DIALOG_WARN $MOUNT_DIR;
+  rm -f -r $TMP_DIALOG_MENU $TMP_DIALOG_ERROR $TMP_DIALOG_INFO $TMP_DIALOG_WARN $MOUNT_DIR;
   exit 1;
 }
 # Function at exit script
 run_at_exit(){
   umount $MOUNT_DIR > /dev/null 2>&1;
-  rm -f -r $TMP_DIALOG_MENU $TMP_DIALOG_ERROR $TMP_DIALOG_WARN $MOUNT_DIR;
+  rm -f -r $TMP_DIALOG_MENU $TMP_DIALOG_ERROR $TMP_DIALOG_INFO $TMP_DIALOG_WARN $MOUNT_DIR;
   exit 0;
 }
 
@@ -141,18 +147,18 @@ while [[ $EXIT_FORM == "true" ]];do
       if [ $? -ne 0 ];then
         error_func "ERROR: Request not saved to $FORM_REQUEST. Maybe this device mount only reading.";
       else
-        DIALOGRC="$TMP_DIALOG_WARN" \
+        DIALOGRC="$TMP_DIALOG_INFO" \
         dialog --ok-label "OK" \
-           --msgbox "\nWARN: Request saved to $FORM_REQUEST." 10 50;
+           --msgbox "\nINFO: Request saved to $FORM_REQUEST." 10 50;
       fi;
     else
       nodeinfo | tr -d '\n' > $MOUNT_DIR/request
       if [ $? -ne 0 ];then
         error_func "ERROR: Request not saved to device SMILART_LIC.";
       else
-        DIALOGRC="$TMP_DIALOG_WARN" \
+        DIALOGRC="$TMP_DIALOG_INFO" \
         dialog --ok-label "OK" \
-           --msgbox "\nWARN: Request saved to device $PARTITION_LIC." 10 50;
+           --msgbox "\nINFO: Request saved to device $PARTITION_LIC." 10 50;
       fi;
     fi;
     run_at_exit;
@@ -203,9 +209,9 @@ while [[ $EXIT_FORM == "true" ]];do
           continue;
         fi;
 
-        DIALOGRC="$TMP_DIALOG_WARN" \
+        DIALOGRC="$TMP_DIALOG_INFO" \
          dialog --ok-label "OK" \
-            --msgbox "\nWARN: License file saved to $LICENSE_INSTALLED_PATH." 10 50;
+            --msgbox "\nINFO: License file saved to $LICENSE_INSTALLED_PATH." 10 50;
 
         cp $FORM_RESPONSE $LICENSE_INSTALLED_PATH/license > /dev/null 2>&1; 
         if [ $? -ne 0 ];then
@@ -226,9 +232,9 @@ while [[ $EXIT_FORM == "true" ]];do
           continue;
         fi;
 
-        DIALOGRC="$TMP_DIALOG_WARN" \
+        DIALOGRC="$TMP_DIALOG_INFO" \
          dialog --ok-label "OK" \
-            --msgbox "\nWARN: License file saved to $LICENSE_INSTALLED_PATH." 10 50;
+            --msgbox "\nINFO: License file saved to $LICENSE_INSTALLED_PATH." 10 50;
 
         cp $MOUNT_DIR/license $LICENSE_INSTALLED_PATH/license > /dev/null 2>&1;
         if [ $? -ne 0 ];then
