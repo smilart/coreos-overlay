@@ -79,8 +79,6 @@ src_compile() {
 src_install() {
 	insinto /usr/share/${PN}
 	doins certs/*
-	#Adding smilart cert
-	doins ${FILESDIR}/packages.smilart.com.pem
 	# for compatibility with older directory structure
 	dosym . /usr/share/${PN}/mozilla
 
