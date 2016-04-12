@@ -6,13 +6,22 @@ Before=initrd-parse-etc.service
 Requires=initrd-root-fs.target
 After=initrd-root-fs.target
 
-Requires=mnt-oem.mount
-After=mnt-oem.mount
+Requires=ignition-disks.service
+After=ignition-disks.service
+
+# setup the root filesystem before we try do things like create users on it.
+Requires=initrd-setup-root.service
+After=initrd-setup-root.service
+
+# setup networking
+Wants=initrd-systemd-networkd.service
+After=initrd-systemd-networkd.service
+
+# generate resolv.conf
+Wants=initrd-systemd-resolved.service
+After=initrd-systemd-resolved.service
 
 [Service]
 Type=oneshot
-TimeoutStartSec=30s
-Environment=OEM_ID=pxe
-Environment=FETCH_TIMEOUT=1m
-EnvironmentFile=-/mnt/oem/oem-release
-ExecStart=/usr/bin/ignition --root=/sysroot --oem=${OEM_ID} --stage=files --fetchtimeout=${FETCH_TIMEOUT}
+EnvironmentFile=/run/ignition.env
+ExecStart=/usr/bin/ignition --root=/sysroot --oem=${OEM_ID} --stage=files

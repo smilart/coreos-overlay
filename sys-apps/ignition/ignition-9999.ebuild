@@ -11,7 +11,7 @@ inherit coreos-doc coreos-go cros-workon systemd udev
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm64"
 else
-	CROS_WORKON_COMMIT="41f6093552a80e8b78b769f9bca8599c8b269097" # tag v0.1.3
+	CROS_WORKON_COMMIT="dc78ffde831f551b10ae0ee53b5775f59b7dc829" # tag v0.2.4
 	KEYWORDS="amd64 arm64"
 fi
 
@@ -20,7 +20,7 @@ HOMEPAGE="https://github.com/coreos/ignition"
 SRC_URI=""
 
 LICENSE="Apache-2.0"
-SLOT="0"
+SLOT="0/${PVR}"
 IUSE=""
 
 src_compile() {
@@ -31,9 +31,6 @@ src_compile() {
 src_install() {
 	newbin ${GOBIN}/src ${PN}
 
-	udev_dorules "${FILESDIR}"/90-ignition.rules
-
-	systemd_dounit "${FILESDIR}"/mnt-oem.mount
 	systemd_dounit "${FILESDIR}"/ignition.target
 	systemd_dounit "${FILESDIR}"/ignition-disks.service
 	systemd_dounit "${FILESDIR}"/ignition-files.service

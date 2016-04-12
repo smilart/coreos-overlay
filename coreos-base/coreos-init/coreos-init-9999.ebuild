@@ -10,7 +10,7 @@ CROS_WORKON_REPO="git://github.com"
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 else
-	CROS_WORKON_COMMIT="06cab4f4cc45d31468e6f9856d882a19a37400de"
+	CROS_WORKON_COMMIT="579d8b3a5ccfd3c19306d06021075716f0ad94ba"
 	KEYWORDS="amd64 arm arm64 x86"
 fi
 
@@ -31,6 +31,7 @@ REQUIRED_USE="symlink-usr"
 DEPEND="
 	app-emulation/docker
 	net-misc/openssh
+	net-nds/rpcbind
 	!<dev-db/etcd-0.0.1-r6
 	!coreos-base/oem-service
 	test? ( dev-lang/python:2.7 )
@@ -49,4 +50,7 @@ src_install() {
 	# Enable some sockets that aren't enabled by their own ebuilds.
 	systemd_enable_service sockets.target sshd.socket
 	systemd_enable_service sockets.target docker.socket
+
+	# Enable some services that aren't enabled elsewhere.
+	systemd_enable_service rpcbind.target rpcbind.service
 }

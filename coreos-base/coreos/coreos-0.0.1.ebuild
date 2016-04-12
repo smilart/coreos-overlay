@@ -96,14 +96,13 @@ RDEPEND="${RDEPEND}
 	)"
 
 RDEPEND="${RDEPEND}
-	app-emulation/rkt[actool]
+	amd64? ( app-emulation/rkt[actool] )
 	app-emulation/xenstore
 	amd64? ( app-emulation/xenserver-pv-version )
 	sys-apps/findutils
 	sys-apps/which
 	app-admin/flannel
 	app-admin/fleet
-	app-admin/kubelet
 	app-admin/locksmith
 	app-admin/mayday
 	app-admin/sudo
@@ -112,11 +111,13 @@ RDEPEND="${RDEPEND}
 	app-arch/tar
 	app-arch/unzip
 	app-arch/zip
+	app-crypt/go-tspi
 	app-misc/jq
 	app-shells/bash
 	coreos-base/update_engine
 	coreos-base/coreos-init
 	coreos-base/coreos-cloudinit
+	coreos-base/coreos-metadata
 	coreos-base/coretest
 	dev-util/strace
 	net-analyzer/nmap

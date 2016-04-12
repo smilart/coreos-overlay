@@ -115,6 +115,10 @@ src_prepare() {
 }
 
 src_install() {
+	if [[ -z "$(find -type f)" ]]; then
+		die "No firmware files found to install."
+	fi
+
 	insinto /lib/firmware/
-	doins -r *
+	doins -r .
 }

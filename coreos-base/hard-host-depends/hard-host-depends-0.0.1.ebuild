@@ -63,7 +63,6 @@ RDEPEND="${RDEPEND}
 	dev-python/setproctitle
 	dev-python/ws4py
 	sys-devel/bc
-	dev-util/cmake
 	dev-util/gdbus-codegen
 	dev-util/gperf
 	>=dev-util/gtk-doc-am-1.13
@@ -73,6 +72,7 @@ RDEPEND="${RDEPEND}
 	>=dev-vcs/git-1.7.2
 	dev-vcs/mercurial
 	dev-vcs/subversion[-dso]
+	net-misc/gcutil
 	net-misc/gsutil
 	sys-apps/usbutils
 	sys-apps/systemd

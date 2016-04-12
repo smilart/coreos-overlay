@@ -38,6 +38,16 @@ DEPEND="
 	sys-firmware/edk2-ovmf
 	sys-fs/btrfs-progs
 	sys-fs/cryptsetup
-	dev-rust/cargo
 	"
+
+# Must match the build-time dependencies listed in selinux-policy-2.eclass
+DEPEND="${DEPEND}
+	>=sys-apps/checkpolicy-2.0.21
+	>=sys-apps/policycoreutils-2.0.82
+	sys-devel/m4"
+
+# Required by dev-lang/spidermonkey-1.8.5
+DEPEND="${DEPEND}
+	sys-devel/autoconf:2.1"
+
 RDEPEND="${DEPEND}"

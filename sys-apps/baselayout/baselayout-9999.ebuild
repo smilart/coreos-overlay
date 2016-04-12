@@ -9,7 +9,7 @@ CROS_WORKON_REPO="git://github.com"
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 else
-	CROS_WORKON_COMMIT="cc3915ded60928f5a85d594d1faab4899174361e"
+	CROS_WORKON_COMMIT="3abb48d77b2026448d8e8cf8d8c2ffa6a2ccc25b"
 	KEYWORDS="amd64 arm arm64 x86"
 fi
 
@@ -149,6 +149,8 @@ src_install() {
 	if use cros_host; then
 		# Provided by vim in the SDK
 		rm -r "${D}"/etc/vim || die
+		# Undesirable in the SDK
+		rm "${D}"/etc/profile.d/coreos-profile.sh || die
 	else
 		# Don't install /etc/issue since it is handled by coreos-init right now
 		rm "${D}"/etc/issue || die
