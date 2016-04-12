@@ -40,3 +40,15 @@ UNIPATCH_LIST="
         ${PATCH_DIR}/0022-Don-t-verify-write-permissions-on-lower-inodes-on-ov.patch \
 "
 
+src_compile() {
+        kernel-2_src_compile
+        tar  -cjf ${WORKDIR}/linux.tar.bz2 *
+
+}
+
+src_install() {
+        dodir /usr/sources
+        insinto /usr/sources
+        doins ${WORKDIR}/linux.tar.bz2
+        kernel-2_src_install
+}
