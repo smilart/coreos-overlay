@@ -214,6 +214,8 @@ src_configure() {
 src_install() {
 	emake install-nokeys DESTDIR="${D}"
 	fperms 600 /etc/ssh/sshd_config
+	# Added access for root
+	echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 	dobin contrib/ssh-copy-id
 	keepdir /var/empty
 
