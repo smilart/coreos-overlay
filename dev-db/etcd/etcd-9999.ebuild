@@ -26,8 +26,7 @@ LICENSE="Apache-2.0"
 SLOT="2"
 IUSE=""
 
-RDEPEND="!dev-db/etcd:0
-	!dev-db/etcdctl"
+RDEPEND="!dev-db/etcdctl"
 
 src_compile() {
 	GO_LDFLAGS="-X ${COREOS_GO_PACKAGE}/version.GitSHA ${CROS_WORKON_COMMIT:0:7}"
