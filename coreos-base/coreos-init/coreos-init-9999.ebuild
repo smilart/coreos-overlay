@@ -3,14 +3,14 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4"
-CROS_WORKON_PROJECT="coreos/init"
+CROS_WORKON_PROJECT="smilart/init"
 CROS_WORKON_LOCALNAME="init"
 CROS_WORKON_REPO="git://github.com"
 
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 else
-	CROS_WORKON_COMMIT="579d8b3a5ccfd3c19306d06021075716f0ad94ba"
+	CROS_WORKON_COMMIT="5363ebd1ba0584da189f618c6983da8ad8f8b80c"
 	KEYWORDS="amd64 arm arm64 x86"
 fi
 
