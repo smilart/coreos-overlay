@@ -6,7 +6,6 @@ EAPI="4"
 CROS_WORKON_PROJECT="smilart/init"
 CROS_WORKON_LOCALNAME="init"
 CROS_WORKON_REPO="git://github.com"
-CROS_WORKON_COMMIT="smilart-build-899"
 
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
