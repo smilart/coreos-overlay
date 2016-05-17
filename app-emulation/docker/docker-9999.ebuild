@@ -29,7 +29,7 @@ IUSE="apparmor aufs +btrfs contrib +device-mapper experimental lxc +overlay +sel
 CDEPEND="
 	>=dev-db/sqlite-3.7.9:3
 	device-mapper? (
-		>=sys-fs/lvm2-2.02.89[thin]
+		>=sys-fs/lvm2-2.02.109[thin]
 	)
 "
 
