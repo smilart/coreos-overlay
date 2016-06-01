@@ -1,11 +1,12 @@
-EAPI="5"
+# Copyright 2015 The SmialrtOS Authors
 
-SLOT="0"
+EAPI="5"
 
 DESCRIPTION="Smilart utils to configure user licenses."
 HOMEPAGE="http://smilart.com"
 
 LICENSE="MIT"
+SLOT="0"
 KEYWORDS="amd64"
 
 SRC_URI="http://coreos-build.smilart.com/binary/license/smilart-license-1.0.tar.bz2"
