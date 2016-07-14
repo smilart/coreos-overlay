@@ -9,7 +9,7 @@ CROS_WORKON_REPO="git://github.com"
 if [[ "${PV}" == 9999 ]]; then
 	KEYWORDS="~amd64 ~arm ~arm64 ~x86"
 else
-	CROS_WORKON_COMMIT="cc3915ded60928f5a85d594d1faab4899174361e"
+	CROS_WORKON_COMMIT="a198c5aa0d63aeebf45981f406b8478e62c101b4"
 	KEYWORDS="amd64 arm arm64 x86"
 fi
 
@@ -33,6 +33,12 @@ DEPEND="sys-apps/systemd
 RDEPEND="${DEPEND}
 	>=sys-apps/gentoo-functions-0.10
 	cros_host? ( !coreos-base/coreos-init )"
+
+MOUNT_POINTS=(
+	/dev
+	/proc
+	/sys
+)
 
 declare -A LIB_SYMS		# list of /lib->lib64 symlinks
 declare -A USR_SYMS		# list of /foo->usr/foo symlinks
@@ -116,6 +122,13 @@ src_install() {
 	# Fill in all other paths defined in tmpfiles configs
 	systemd-tmpfiles --root="${D}" --create
 
+	# The above created a few mount points but leave those out of the
+	# package since they may be mounted read-only. postinst can make them.
+	local mnt
+	for mnt in "${MOUNT_POINTS[@]}"; do
+		rmdir "${D}${mnt}" || die
+	done
+
 	doenvd "env.d/99coreos_ldpath"
 
 	# handle multilib paths.  do it here because we want this behavior
@@ -146,9 +159,15 @@ src_install() {
 	# For compatibility with older SDKs which use 1000 for the core user.
 	fowners -R 500:500 /home/core || die
 
+	if use arm64; then
+		sed -i 's/ sss//' "${D}"/usr/share/baselayout/nsswitch.conf || die
+	fi
+
 	if use cros_host; then
 		# Provided by vim in the SDK
 		rm -r "${D}"/etc/vim || die
+		# Undesirable in the SDK
+		rm "${D}"/etc/profile.d/coreos-profile.sh || die
 	else
 		# Don't install /etc/issue since it is handled by coreos-init right now
 		rm "${D}"/etc/issue || die
@@ -161,9 +180,19 @@ src_install() {
 		systemd_dounit "scripts/coreos-tmpfiles.service"
 		systemd_enable_service sysinit.target coreos-tmpfiles.service
 	fi
+
+	# sssd not yet building on arm64
+	if use arm64; then
+		sed -i -e '/pam_sss.so/d' "${D}"/usr/lib/pam.d/* || die
+	fi
 }
 
 pkg_postinst() {
+	# best-effort creation of mount points
+	local mnt
+	for mnt in "${MOUNT_POINTS[@]}"; do
+		[[ -d "${ROOT}${mnt}" ]] || mkdir "${ROOT}${mnt}"
+	done
 	# Set up /usr/lib/debug to match the root filesystem layout
 	# FIXME: This is done in postinst right now and all errors are ignored
 	# as a transitional scheme, this isn't important enough to migrate
