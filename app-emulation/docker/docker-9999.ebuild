@@ -297,8 +297,4 @@ pkg_postinst() {
 	elog "To use Docker as a non-root user, add yourself to the 'docker' group:"
 	elog "  usermod -aG docker youruser"
 	elog
-        mkdir -p /usr/local/docker
-        for line in `ldd /usr/bin/docker | grep '=>' | awk ' {print $3} '` do
-            ln $line /usr/local/docker/$line
-        done
 }
