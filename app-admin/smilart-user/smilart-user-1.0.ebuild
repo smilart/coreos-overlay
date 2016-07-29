@@ -15,7 +15,3 @@ src_install() {
    enewuser smilart 0 -1 -1 "sudo,docker" -p `mkpasswd  -m sha-512 -S saltsalt -s <<< smilart`
    dodir /data/share
 }
-
-src_compile() {
-   return
-}
