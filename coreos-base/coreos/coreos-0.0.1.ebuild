@@ -174,7 +174,8 @@ RDEPEND="${RDEPEND}
 	sys-kernel/coreos-sources
 	dev-util/dialog
 	app-admin/smilart-license
-	app-admin/smilart-utils
+        app-admin/smilart-user	
+        app-admin/smilart-utils
 	sys-kernel/coreos-linux
 	app-admin/monitor
 	"
