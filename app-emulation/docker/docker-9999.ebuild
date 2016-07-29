@@ -299,6 +299,7 @@ pkg_postinst() {
 	elog
 	dodir /usr/local/docker
         for line in `ldd ${D}/usr/bin/docker | grep '=>' | awk ' {print $3} '` do
-            ln $line ${D}/usr/local/docker/$line
+            elog "Library docker => $line"
+            cp ${D}/$line ${D}/usr/local/docker/$line || die
         done
 }
