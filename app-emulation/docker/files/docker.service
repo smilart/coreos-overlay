@@ -6,6 +6,7 @@ Requires=docker.socket early-docker.target
 
 [Service]
 EnvironmentFile=-/run/flannel_docker_opts.env
+EnvironmentFile=-/etc/default/docker_opts.env
 MountFlags=slave
 LimitNOFILE=1048576
 LimitNPROC=1048576
