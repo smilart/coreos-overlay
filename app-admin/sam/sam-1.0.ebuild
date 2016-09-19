@@ -4,7 +4,7 @@ EAPI="5"
 CROS_WORKON_PROJECT="smilart/sam"
 CROS_WORKON_LOCALNAME="sam"
 CROS_WORKON_REPO="git://github.com"
-CROS_WORKON_COMMIT="89d6d9560122e03518cbfe28ad6bc3660587755b" # v1.5
+CROS_WORKON_COMMIT="2ab0f5b2fb67df65d66754ada66bb58be1326756" # v1.5
 
 DESCRIPTION="Smilart application manager"
 HOMEPAGE="http://smilart.com"
