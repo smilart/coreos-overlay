@@ -168,7 +168,6 @@ RDEPEND="${RDEPEND}
 	dev-vcs/git
 	app-misc/mc
 	net-analyzer/netcat
-	net-dns/skydns
 	app-admin/sam
 	sys-apps/diffutils
 	sys-kernel/coreos-sources
@@ -176,5 +175,4 @@ RDEPEND="${RDEPEND}
 	app-admin/smilart-license
         app-admin/smilart-utils
 	sys-kernel/coreos-linux
-	app-admin/monitor
 	"
