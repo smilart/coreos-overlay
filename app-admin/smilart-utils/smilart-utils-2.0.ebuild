@@ -4,7 +4,7 @@ EAPI="5"
 CROS_WORKON_PROJECT="smilart/smilart.os.utils"
 CROS_WORKON_LOCALNAME="smilart-utils"
 CROS_WORKON_REPO="git://github.com"
-CROS_WORKON_COMMIT="0825b8e063615233cdace8d2138a0be11c422b6d"
+CROS_WORKON_COMMIT="ae86ed11cccefdaebc5ef1d2859369abc71de9fa"
 
 DESCRIPTION="Smilart utils"
 HOMEPAGE="http://smilart.com"

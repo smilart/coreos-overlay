@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#debug mode
+#Debug mode
 #set -vx;
 
 LICENSE_INSTALLED_PATH=/var/lib/smilart_srv/license;
@@ -128,7 +128,7 @@ while [[ $EXIT_FORM == "true" ]];do
           --title "Smilart Operating System" \
           --form "\nNot found device whit label SMILART_LIC.\n" \
          0 0 0 \
-         "Path to request:              " 1 1 "$FORM_REQUEST"           1 20 30 0 \
+         "Path to request file:              " 1 1 "$FORM_REQUEST"           1 25 30 0 \
          2>&1 1>&3)
       DIALOG_RETURN_VALUE=$?
       exec 3>&-
@@ -144,19 +144,29 @@ while [[ $EXIT_FORM == "true" ]];do
         FORM_REQUEST=$PWD
       fi;
 
+      #Path is valid?
+      if ! [ -d ${FORM_REQUEST} ];then
+         mkdir -p ${FORM_REQUEST};
+         if [ $? -ne 0 ];then
+           error_func "ERROR: Cannot create directory ${FORM_REQUEST}";
+           continue
+         fi;
+      fi;
+
       nodeinfo | tr -d '\n' > $FORM_REQUEST/request
       if [ $? -ne 0 ];then
-        error_func "ERROR: Request not saved to $FORM_REQUEST. Maybe this device mount only reading.";
+        error_func "ERROR: Request not saved to $FORM_REQUEST. Maybe directory is read-only..";
+        continue
       else
         DIALOGRC="$TMP_DIALOG_INFO" \
         dialog --ok-label "OK" \
            --title "" \ 
-           --msgbox "\nINFO: Request saved to $FORM_REQUEST." 10 50;
+           --msgbox "\nINFO: Request saved to $FORM_REQUEST/request." 10 50;
       fi;
     else
       nodeinfo | tr -d '\n' > $MOUNT_DIR/request
       if [ $? -ne 0 ];then
-        error_func "ERROR: Request not saved to device SMILART_LIC.";
+        error_func "ERROR: Request not saved to device SMILART_LIC. Cannot create file request.";
       else
         DIALOGRC="$TMP_DIALOG_INFO" \
         dialog --ok-label "OK" \

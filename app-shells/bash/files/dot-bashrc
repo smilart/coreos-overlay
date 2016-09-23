@@ -10,10 +10,9 @@ if [[ $- =~ "i" && $USER == "smilart" ]]; then
     setterm --blank 0
   fi;
 
-  if [ ! -e /etc/smilart/first_boot ]; then
-    
+  if [ ! -e /etc/smilart/first_boot ]; then    
     #First start of the product installation script.
     distribution-config;
-
   fi;
+
 fi;
