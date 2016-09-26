@@ -160,7 +160,7 @@ while [[ $EXIT_FORM == "true" ]];do
       else
         DIALOGRC="$TMP_DIALOG_INFO" \
         dialog --ok-label "OK" \
-           --title "" \ 
+           --title "" \
            --msgbox "\nINFO: Request saved to $FORM_REQUEST/request." 10 50;
       fi;
     else
